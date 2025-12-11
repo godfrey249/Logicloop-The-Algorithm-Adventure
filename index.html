@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Puzzle Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<script>
+      if (!document.referrer.includes('home.html')) {
+        window.location.href = 'home.html';
+      }
+    </script>
+<body>
+    <div class="game-container">
+        <!-- Player Selection Screen -->
+        <div id="playerScreen" class="screen active">
+            <h1>LogicLoop Challenge</h1>
+            
+            <div class="player-selection">
+                <h2>Welcome!</h2>
+                
+                <!-- New Player -->
+                <div class="player-option">
+                    <h3>New Player</h3>
+                    <div class="input-group">
+                        <input type="text" id="newPlayerName" placeholder="Enter your name..." maxlength="20">
+                        <input type="password" id="newPlayerPassword" placeholder="Create password (min 4 chars)" maxlength="30" required>
+                        <button class="primary-btn" onclick="createNewPlayer()">Start Game</button>
+                    </div>
+                </div>
+                
+                  
+                <!-- Load Existing Player - COLLAPSIBLE -->
+                <div class="player-option">
+                    <div class="load-game-header" onclick="toggleLoadGame()">
+                        <span class="toggle-icon" id="loadGameIcon">▶</span>
+                        <span class="load-game-title">Load Game</span>
+                    </div>
+                    <div id="loadGameSection" class="load-game-section collapsed">
+                        <div id="playerList" class="player-list">
+                            <!-- Players will be dynamically loaded here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Leaderboard Button -->
+                <div class="player-option">
+                    <button class="secondary-btn" onclick="showLeaderboard()">
+                        🏆 View Leaderboard
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Exit Button -->
+            <div class="exit-container">
+                <button class="exit-btn" onclick="exitToHomepage()">
+                    ← Exit to Homepage
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Leaderboard Screen -->
+        <div id="leaderboardScreen" class="screen">
+            <h1>🏆 Leaderboard</h1>
+            
+            <div class="leaderboard-container">
+                <div class="leaderboard-tabs">
+                    <button class="tab-btn active" onclick="showLeaderboardCategory('beginner')">Beginner</button>
+                    <button class="tab-btn" onclick="showLeaderboardCategory('advanced')">Advanced</button>
+                </div>
+                
+                <div id="leaderboardContent" class="leaderboard-content">
+                    <!-- Leaderboard will be dynamically loaded here -->
+                </div>
+            </div>
+            
+            <button class="back-btn" onclick="backToPlayerSelect()">← Back to Player Selection</button>
+        </div>
+
+
+       <!-- Category Selection Screen -->
+<div id="categoryScreen" class="screen">
+    <div class="player-info-header">
+        <div class="current-player">
+            <span>👤 Player: <strong id="currentPlayerName"></strong></span>
+            <span>🏆 Total Score: <strong id="totalScore">0</strong></span>
+        </div>
+        <div class="player-actions">
+            <button class="password-btn" onclick="changePassword()" title="Change Password">🔒</button>
+            <button class="delete-btn" onclick="deleteMyAccount()" title="Delete My Account">🗑️</button>
+            <button class="switch-player-btn" onclick="switchPlayer()">Switch Player</button>
+        </div>
+    </div>
+    
+    <h1>Code Puzzle Challenge</h1>
+
+    <div class="category-buttons">
+        <button class="category-btn" onclick="selectCategory('beginner')">
+            <h2>Beginner</h2>
+            <p>5 Levels - Basic Programming Concepts</p>
+        </button>
+        <button class="category-btn" onclick="selectCategory('advanced')">
+            <h2>Advanced</h2>
+            <p>5 Levels - Complex Algorithms</p>
+        </button>
+    </div>
+    
+    <!-- Back and Exit Buttons -->
+    <div class="exit-container" style="display: flex; gap: 15px; justify-content: center;">
+        <button class="back-btn" onclick="backToPlayerSelectFromMenu()">
+            ← Back to Player Selection
+        </button>
+        <button class="exit-btn" onclick="exitToHomepage()">
+            ← Exit to Homepage
+        </button>
+    </div>
+</div>
+
+
+        <!-- Level Selection Screen -->
+        <div id="levelScreen" class="screen">
+            <h1 id="categoryTitle"></h1>
+            
+            <!-- Continue & New Game Buttons -->
+            <div class="game-mode-buttons-level">
+                <button class="game-mode-btn-small continue-btn" onclick="continueFromCurrentCategory()">
+                    <span class="btn-icon-small">▶</span>
+                    <span class="btn-text">Continue</span>
+                </button>
+                <button class="game-mode-btn-small new-game-btn" onclick="startNewGameFromCurrentCategory()">
+                    <span class="btn-icon-small">🎮</span>
+                    <span class="btn-text">New Game</span>
+                </button>
+            </div>
+            
+            <div class="level-buttons" id="levelButtons"></div>
+            <button class="back-btn" onclick="backToCategories()">← Back to Categories</button>
+        </div>
+
+
+        <!-- Game Screen -->
+        <div id="gameScreen" class="screen">
+            <div class="game-layout">
+                <!-- Left Side: Question -->
+                <div class="left-panel">
+                    <div class="panel-header">
+                        <h2>Question <span id="questionNumber"></span></h2>
+                        <div class="score">Score: <span id="score">0</span></div>
+                    </div>
+                    <div class="question-content">
+                        <p id="questionText"></p>
+                        <p id="instructionsText" class="instructions-text" style="display: none;"></p>
+                        
+                        <div id="codeBlock" class="code-block" style="display: none;"></div>
+                        <textarea id="codeEditor" class="code-editor" placeholder="Write your code here..." rows="8" style="display: none;"></textarea>
+                        
+                        <button id="hintBtn" class="hint-btn" onclick="showHint()">💡 SHOW HINT</button>
+                        <div id="hintText" class="hint-box"></div>
+                    </div>
+
+                    <div class="answer-input">
+                        <input type="text" id="answerInput" placeholder="Enter your answer..." onkeypress="handleEnterKey(event)">
+                        <button onclick="submitAnswer()">SUBMIT</button>
+                        <button onclick="skipQuestion()" class="skip-btn">SKIP</button>
+                    </div>
+
+                    <div class="level-info">
+                        <p>Level: <span id="currentLevel"></span></p>
+                        <p>Category: <span id="currentCategory"></span></p>
+                        <p>Puzzle Pieces: <span id="piecesCollected">0</span> / 5</p>
+                    </div>
+                    <button class="back-btn" onclick="backToLevels()">← Back to Levels</button>
+                </div>
+
+
+                <!-- Right Side: Puzzle Image -->
+                <div class="right-panel">
+                    <div class="panel-header">
+                        <h2>Puzzle Image</h2>
+                    </div>
+                    <div class="puzzle-container">
+                        <div class="puzzle-wrapper">
+                            <div id="puzzleGrid" class="puzzle-grid">
+                                <div class="puzzle-piece" data-piece="1">
+                                    <div class="piece-overlay">
+                                        <div class="piece-number">1</div>
+                                    </div>
+                                </div>
+                                <div class="puzzle-piece" data-piece="2">
+                                    <div class="piece-overlay">
+                                        <div class="piece-number">2</div>
+                                    </div>
+                                </div>
+                                <div class="puzzle-piece" data-piece="3">
+                                    <div class="piece-overlay">
+                                        <div class="piece-number">3</div>
+                                    </div>
+                                </div>
+                                <div class="puzzle-piece" data-piece="4">
+                                    <div class="piece-overlay">
+                                        <div class="piece-number">4</div>
+                                    </div>
+                                </div>
+                                <div class="puzzle-piece" data-piece="5">
+                                    <div class="piece-overlay">
+                                        <div class="piece-number">5</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                    <div class="progress">
+                        <p>Questions Answered: <span id="questionsAnswered">0</span></p>
+                        <p>Correct: <span id="correctAnswers">0</span></p>
+                        <p>Wrong: <span id="wrongAnswers">0</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Trivia Modal -->
+    <div id="triviaModal" class="trivia-modal">
+        <div class="trivia-content">
+            <div class="trivia-header">
+                <h2>🎉 Level Complete! 🎉</h2>
+                <p class="trivia-subtitle">Did You Know?</p>
+            </div>
+            <div class="trivia-body">
+                <p id="triviaText"></p>
+            </div>
+            <div class="trivia-footer">
+                <button class="trivia-btn proceed-btn" id="proceedBtn" onclick="proceedToNextLevel()">Proceed to Next Level →</button>
+                <button class="trivia-btn back-to-levels-btn" onclick="backToLevelsFromTrivia()">Back to Level Selection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="customAlertModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-icon" id="customAlertIcon">ℹ️</div>
+            <div class="custom-modal-title" id="customAlertTitle">Message</div>
+            <div class="custom-modal-message" id="customAlertMessage"></div>
+            <div class="custom-modal-buttons">
+                <button class="custom-modal-btn" id="customAlertBtn" onclick="closeCustomAlert()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="customConfirmModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-icon" id="customConfirmIcon">❓</div>
+            <div class="custom-modal-title" id="customConfirmTitle">Confirmation</div>
+            <div class="custom-modal-message" id="customConfirmMessage"></div>
+            <div class="custom-modal-buttons">
+                <button class="custom-modal-btn cancel-btn" id="customConfirmCancelBtn">Cancel</button>
+                <button class="custom-modal-btn confirm-btn" id="customConfirmOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Prompt Modal -->
+    <div id="customPromptModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-icon" id="customPromptIcon">✏️</div>
+            <div class="custom-modal-title" id="customPromptTitle">Input Required</div>
+            <div class="custom-modal-message" id="customPromptMessage"></div>
+            <input type="password" class="custom-modal-input" id="customPromptInput" placeholder="Enter here...">
+            <div class="custom-modal-buttons">
+                <button class="custom-modal-btn cancel-btn" id="customPromptCancelBtn">Cancel</button>
+                <button class="custom-modal-btn confirm-btn" id="customPromptOkBtn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
