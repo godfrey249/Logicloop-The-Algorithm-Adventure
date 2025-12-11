@@ -270,18 +270,18 @@ function clearGameState(category) {
 // Puzzle Images
 const puzzleImages = {
     beginner: {
-        level1: 'Beginner1.jpg',
-        level2: 'Beginner2.jpg',
-        level3: 'Beginner3.jpg',
-        level4: 'Beginner4.jpg',
-        level5: 'Beginner5.jpg'
+        level1: 'Image/Beginner1.jpg',
+        level2: 'Image/Beginner2.jpg',
+        level3: 'Image/Beginner3.jpg',
+        level4: 'Image/Beginner4.jpg',
+        level5: 'Image/Beginner5.jpg'
     },
     advanced: {
-        level1: 'Advance1.png',
-        level2: 'Advance2.jpg',
-        level3: 'Advance3.jpg',
-        level4: 'Advance4.jpg',
-        level5: 'Advance5.jpg'
+        level1: 'Image/Advance1.png',
+        level2: 'Image/Advance2.jpg',
+        level3: 'Image/Advance3.jpg',
+        level4: 'Image/Advance4.jpg',
+        level5: 'Image/Advance5.jpg'
     }
 };
 
@@ -1585,4 +1585,5 @@ window.addEventListener('DOMContentLoaded', () => {
     migrateOldPlayers();
     showScreen('playerScreen');
 });
+
 
